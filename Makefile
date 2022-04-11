@@ -9,7 +9,7 @@ SRCS	= main.c
 
 CC		= gcc
 
-CFLAGS	+= -Wall -Wextra -Werror
+CFLAGS	+=
 
 CFLAGS	+= -I$I
 
