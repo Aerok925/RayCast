@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2021/10/10 20:12:49 by jkieth            #+#    #+#             */
+/*   Updated: 2021/10/11 20:14:56 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#include "./libft.h"
 
-typedef struct s_map{
-	char	*all_map;
-	char	*NO;
-	char	*SO;
-	char	*WE;
-	char	*EA;
-	int		FRGB[3];
-	int		CRGB[3];
-}	t_map;
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	size_t			i;
+	unsigned char	*cdst;
+	unsigned char	*csrc;
 
-#endif /*STRUCT_MAP_H*/
+	cdst = (unsigned char *)dst;
+	csrc = (unsigned char *)src;
+	i = 0;
+	if (!dst && !src)
+		return (NULL);
+	while (i++ < n && csrc != NULL)
+		*cdst++ = *csrc++;
+	return (dst);
+}

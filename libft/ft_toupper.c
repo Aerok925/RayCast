@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   ft_toupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2021/10/11 15:37:28 by jkieth            #+#    #+#             */
+/*   Updated: 2021/10/11 16:15:02 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#include "./libft.h"
 
-typedef struct s_map{
-	char	*all_map;
-	char	*NO;
-	char	*SO;
-	char	*WE;
-	char	*EA;
-	int		FRGB[3];
-	int		CRGB[3];
-}	t_map;
-
-#endif /*STRUCT_MAP_H*/
+int	ft_toupper(int c)
+{
+	if (c >= 97 && c <= 122)
+	{
+		c -= 32;
+		return (c);
+	}
+	return (c);
+}

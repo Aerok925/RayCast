@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2021/10/14 14:10:52 by jkieth            #+#    #+#             */
+/*   Updated: 2021/10/14 14:18:31 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#include "libft.h"
 
-typedef struct s_map{
-	char	*all_map;
-	char	*NO;
-	char	*SO;
-	char	*WE;
-	char	*EA;
-	int		FRGB[3];
-	int		CRGB[3];
-}	t_map;
-
-#endif /*STRUCT_MAP_H*/
+void	ft_putnbr_fd(int n, int fd)
+{
+	if (n < 0)
+	{
+		if (n == -2147483648)
+		{
+			ft_putstr_fd("-2", fd);
+			n = 147483648;
+		}
+		else
+		{
+			ft_putchar_fd('-', fd);
+			n *= -1;
+		}
+	}
+	if (n >= 10)
+	{
+		ft_putnbr_fd(n / 10, fd);
+		ft_putnbr_fd(n % 10, fd);
+	}
+	else
+		ft_putchar_fd(n + '0', fd);
+}

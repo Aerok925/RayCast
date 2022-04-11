@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2021/10/10 22:58:13 by jkieth            #+#    #+#             */
+/*   Updated: 2021/10/12 21:12:00 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#include "./libft.h"
+#include <stdio.h>
 
-typedef struct s_map{
-	char	*all_map;
-	char	*NO;
-	char	*SO;
-	char	*WE;
-	char	*EA;
-	int		FRGB[3];
-	int		CRGB[3];
-}	t_map;
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	unsigned const char	*cs1;
+	unsigned const char	*cs2;
 
-#endif /*STRUCT_MAP_H*/
+	if (n == 0)
+		return (0);
+	cs1 = (unsigned const char *)s1;
+	cs2 = (unsigned const char *)s2;
+	while (n)
+	{
+		if (*cs1 != *cs2)
+			return (*cs1 - *cs2);
+		cs1++;
+		cs2++;
+		n--;
+	}
+	return (0);
+}

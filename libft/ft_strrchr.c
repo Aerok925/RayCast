@@ -1,30 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2021/10/09 20:46:26 by jkieth            #+#    #+#             */
+/*   Updated: 2021/10/11 21:18:33 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#include "./libft.h"
 
-typedef struct s_map{
-	char	*all_map;
-	char	*NO;
-	char	*SO;
-	char	*WE;
-	char	*EA;
-	int		FRGB[3];
-	int		CRGB[3];
-}	t_map;
+char	*ft_strrchr(const char *s, int c)
+{
+	int			i;
+	const char	*sym;
 
-#endif /*STRUCT_MAP_H*/
+	i = 0;
+	while (c > 256)
+	{
+		if (c > 256)
+			c -= 256;
+	}
+	while (*s++)
+		i++;
+	s--;
+	while (i >= 0)
+	{
+		if (*s == c)
+		{
+			sym = (char *)s;
+			return ((char *)sym);
+		}
+		i--;
+		s--;
+	}
+	return (NULL);
+}
