@@ -2,6 +2,8 @@
 # define CUB3D_STRUCT_MAP_H
 
 #include "stdio.h"
+#include <stdlib.h>
+#include <string.h>
 
 //typedef struct s_map{
 //	char	*all_map;
