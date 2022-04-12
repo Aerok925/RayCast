@@ -14,7 +14,11 @@
 # define PARSE_MAP_H
 # include "../libft/libft.h"
 # include "struct_map.h"
+# include "free_functions.h"
+# include "check_valid.h"
+# include "correct_map_init.h"
+# include "init_paths_colors.h"
 
-t_map	parser_map(char *path);
+t_map	*parser_map(char *path);
 
 #endif /*PARSE_MAP_H*/

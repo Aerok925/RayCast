@@ -3,9 +3,13 @@ O		= objs/
 I		= incs/
 D		= deps/
 
-NAME	= test
+NAME	= cub3d
 
-SRCS	= main.c
+SRCS	= 	main.c parser_map.c \
+			check_valid.c correct_map_init.c \
+			free_functions.c init_paths_colors.c
+
+LIBFT	=	/libft/libft.a
 
 CC		= gcc
 
@@ -42,15 +46,18 @@ $(DEPS): $D%.d: $S%
 
 $(NAME): $(OBJS)
 	@make -C ./mlx
-	@$(CC) $(LDFLAGS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@
+	@make -C ./libft
+	@$(CC) $(LDFLAGS) -Lmlx -lmlx -framework OpenGL -framework AppKit $^ -o $@ -L./libft -lft
 
 clean:
 	make clean -C ./mlx
 	@$(RM) $D $O
+	@make clean -C ./libft
 
 fclean: clean
 	make clean -C ./mlx
 	@$(RM) $(NAME)
+	@make clean -C ./libft
 
 re: fclean all
 

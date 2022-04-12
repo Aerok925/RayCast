@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   check_valid.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2022/04/12 18:14:07 by jkieth            #+#    #+#             */
+/*   Updated: 2022/04/12 18:14:07 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#ifndef CHECK_VALID_H
+# define CHECK_VALID_H
+# include "../incs/parse_map.h"
 
-typedef struct s_map{
-	char	**all_map;
-	char	*north;
-	char	*south;
-	char	*west;
-	char	*east;
-	int		floor_rgb[3];
-	int		ceil_rgb[3];
-}	t_map;
+int	check_valid(char **map, int i, int j);
+int	check_path(t_map *map);
+int	is_digit_space(char *str);
 
-#endif /*STRUCT_MAP_H*/
+#endif /*CHECK_VALID_H*/

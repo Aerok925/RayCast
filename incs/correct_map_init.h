@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   correct_map_init.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2022/04/12 18:19:05 by jkieth            #+#    #+#             */
+/*   Updated: 2022/04/12 18:19:05 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#ifndef CORRECT_MAP_INIT_H
+# define CORRECT_MAP_INIT_H
+# include "../incs/parse_map.h"
+# include "../incs/check_valid.h"
 
-typedef struct s_map{
-	char	**all_map;
-	char	*north;
-	char	*south;
-	char	*west;
-	char	*east;
-	int		floor_rgb[3];
-	int		ceil_rgb[3];
-}	t_map;
+int		find_biggest_line(char **map);
+char	**correct_map(char **map);
+int		count_str(char **strs);
+char	**str_array_dup(char **strs, int start, int finish);
 
-#endif /*STRUCT_MAP_H*/
+#endif /*CORRECT_MAP_INIT_H*/

@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   init_paths_colors.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2022/04/12 18:24:23 by jkieth            #+#    #+#             */
+/*   Updated: 2022/04/12 18:24:23 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
+#ifndef INIT_PATHS_COLORS_H
+# define INIT_PATHS_COLORS_H
+# include "parse_map.h"
 
-typedef struct s_map{
-	char	**all_map;
-	char	*north;
-	char	*south;
-	char	*west;
-	char	*east;
-	int		floor_rgb[3];
-	int		ceil_rgb[3];
-}	t_map;
+int	init_path(t_map *map, char **full);
+int	pull_colors(t_map *map, char **str_array);
+int	init_floor_and_ceil(t_map *map, char **full);
 
-#endif /*STRUCT_MAP_H*/
+#endif /*INIT_PATHS_COLORS_H*/

@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_map.h                                       :+:      :+:    :+:   */
+/*   free_functions.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:46:44 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 20:50:39 by jkieth           ###   ########.fr       */
+/*   Created: 2022/04/12 18:11:18 by jkieth            #+#    #+#             */
+/*   Updated: 2022/04/12 18:11:18 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCT_MAP_H
-# define STRUCT_MAP_H
-# include <stdio.h>
-# include <unistd.h>
+#ifndef FREE_FUNCTIONS_H
+# define FREE_FUNCTIONS_H
 # include <stdlib.h>
-# include <fcntl.h>
+# include "../incs/struct_map.h"
 
-typedef struct s_map{
-	char	**all_map;
-	char	*north;
-	char	*south;
-	char	*west;
-	char	*east;
-	int		floor_rgb[3];
-	int		ceil_rgb[3];
-}	t_map;
+void	*free_matrix(char **str_array);
+void	*free_map(t_map *map);
 
-#endif /*STRUCT_MAP_H*/
+#endif /*FREE_FUNCTIONS_H*/
