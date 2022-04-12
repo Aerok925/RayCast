@@ -142,6 +142,13 @@ void makecolor(t_img *line)
 			line->buffer[y * line->height + x] = line->color;
 }
 
+void setImgtoTemplate123(t_template *temp, t_img *img, int qwe )
+{
+	for (int y = 0; y < 8; y++)
+		for (int x = 0; x < 8; x++)
+			temp->buffer[(x + (int)img->px) + (y + (int)img->py) * temp->width] = img->buffer[(int)img->x1 * x  ];
+}
+
 
 int drawXRay(t_win *win){
 
@@ -161,6 +168,7 @@ int drawXRay(t_win *win){
 		ra -=2*PI;
 	}
 	for (r = 0; r < 60; r++){
+//		printf("%f \n", ra);
 		dof = 0;
 		disH = 1000000, hx = win->player.px, hy = win->player.py;
 		float aTan =-1/ tan(ra);
@@ -241,13 +249,20 @@ int drawXRay(t_win *win){
 		if (lineH > 320)
 			lineH = 320;
 		float lineO = 160 - lineH / 2;
-		win->wall.px = r * 8 + 530;
-		win->wall.py = lineO;
-		win->wall.x1 = r * 8 + 530;
-		win->wall.y1 = lineH + lineO;
-		printf("%f %f \n", win->wall.px , win->wall.x1);
+		float ty = 0;
+		float ty_step = 64.0 / (float)lineH;
+		for (int y = 0; y < lineH; y++){
+			win->wall.px = r * 8 + 530;
+			win->wall.py = y + lineO;
+			win->wall.x1 = (int)(ty) * 64;
+			setImgtoTemplate432(&win->wall, &win->temp);
+//			printf("%d \n", (int)win->wall.x1);
+			ty+=ty_step;
+		}
+
+
 		drawfullline(win, &win->line);
-		drawfullline(win, &win->wall);
+
 	}
 	return (1);
 }
@@ -368,9 +383,12 @@ int main()
 	win.wall.height = 8;
 	win.wall.width = 8;
 	win.wall.color = 0x00FF00FF;
-	win.wall.img = mlx_new_image(win.mlx, win.wall.width, win.wall.height);
-	win.wall.buffer = (int *)mlx_get_data_addr(win.wall.img, &win.wall.pixel_bits, &win.wall.line_bytes, &win.wall.endian);
-	makecolor(&win.wall);
+	int a, b;
+	void *qwe = mlx_xpm_file_to_image(win.mlx, "textures/1.xpm", &a, &b);
+	win.wall.img = mlx_new_image(win.mlx, a, b);
+	win.wall.buffer = (int *)mlx_get_data_addr(qwe, &win.wall.pixel_bits, &win.wall.line_bytes, &win.wall.endian);
+
+//	makecolor(&win.wall);
 	makecolor(&win.line);
 	makemap(&win);
 	drawMap(&win);
