@@ -142,11 +142,11 @@ void makecolor(t_img *line)
 			line->buffer[y * line->height + x] = line->color;
 }
 
-void setImgtoTemplate123(t_template *temp, t_img *img, int qwe )
+void setImgtoTemplate123(t_template *temp, t_img *img )
 {
 	for (int y = 0; y < 8; y++)
 		for (int x = 0; x < 8; x++)
-			temp->buffer[(x + (int)img->px) + (y + (int)img->py) * temp->width] = img->buffer[(int)img->x1 * x  ];
+		temp->buffer[((int)img->px) + x + (y + (int)img->py) * temp->width] = img->color;
 }
 
 
@@ -215,10 +215,12 @@ int drawXRay(t_win *win){
 			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) {vx = rx; vy = ry; disV = dist(win->player.px , win->player.py, vx , vy, ra);dof = 8;}
 			else {rx+=xo; ry+=yo; dof++;}
 		}
+		int shade = 0xffffff;
 		if (disV < disH){
 			rx = vx;
 			ry = vy;
 			disT = disV;
+			shade = 0x010101;
 		}
 		if (disV > disH)
 		{
@@ -245,21 +247,28 @@ int drawXRay(t_win *win){
 			ca -=2*PI;
 		}
 		disT = disT * cos(ca);
-		float lineH = (mapS * 320) / disT;
-		if (lineH > 320)
-			lineH = 320;
-		float lineO = 160 - lineH / 2;
-		float ty = 0;
+		float lineH = (mapS * 520) / disT;
 		float ty_step = 64.0 / (float)lineH;
+		float ty_off = 0;
+		if (lineH > 520)
+		{
+			ty_off = (lineH-520) / 2.0;
+			lineH = 520;
+		}
+		float lineO = 160 - lineH / 2;
+		float ty = ty_off * ty_step;
+		float tx = (int)((ry + rx))%64;
 		for (int y = 0; y < lineH; y++){
 			win->wall.px = r * 8 + 530;
 			win->wall.py = y + lineO;
-			win->wall.x1 = (int)(ty) * 64;
-			setImgtoTemplate432(&win->wall, &win->temp);
-//			printf("%d \n", (int)win->wall.x1);
+			win->wall.x1 = (int)(ty) * 64 + (int)tx;
+			win->wall.color = win->wall.buffer[(int)win->wall.x1];
+//			printf("%f \n", win->wall.x1);
+
+			setImgtoTemplate123(&win->temp, &win->wall);
+//			setImgtoTemplate(&win->wall, &win->temp);
 			ty+=ty_step;
 		}
-
 
 		drawfullline(win, &win->line);
 
@@ -384,11 +393,11 @@ int main()
 	win.wall.width = 8;
 	win.wall.color = 0x00FF00FF;
 	int a, b;
-	void *qwe = mlx_xpm_file_to_image(win.mlx, "textures/1.xpm", &a, &b);
+	void *qwe = mlx_xpm_file_to_image(win.mlx, "textures/checkmate.xpm", &a, &b);
 	win.wall.img = mlx_new_image(win.mlx, a, b);
 	win.wall.buffer = (int *)mlx_get_data_addr(qwe, &win.wall.pixel_bits, &win.wall.line_bytes, &win.wall.endian);
-
 //	makecolor(&win.wall);
+
 	makecolor(&win.line);
 	makemap(&win);
 	drawMap(&win);
