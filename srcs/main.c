@@ -110,7 +110,7 @@ void drawfullline(t_win *win, t_img *img)
 	}
 }
 
-float dist(float ax, float ay, float bx, float by, float ang)
+float dist(float ax, float ay, float bx, float by)
 {
 	return (sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay)));
 }
@@ -125,7 +125,7 @@ int		create_trgb(int t, int r, int g, int b)
 
 void templateBlack(t_template *temp){
 	int color = 0x000000;
-	int white = 0xFFFFFF;
+//	int white = 0xFFFFFF;
 	for (int y = 0; y < temp->height; y++)
 	{
 		for (int x = 0; x < temp->width; x++)
@@ -144,9 +144,9 @@ void makecolor(t_img *line)
 
 void setImgtoTemplate123(t_template *temp, t_img *img )
 {
-	for (int y = 0; y < 8; y++)
+//	for (int y = 0; y < 8; y++)
 		for (int x = 0; x < 8; x++)
-		temp->buffer[((int)img->px) + x + (y + (int)img->py) * temp->width] = img->color;
+		temp->buffer[((int)img->px + x) + ((int)img->py) * temp->width] = img->color;
 }
 
 
@@ -189,7 +189,7 @@ int drawXRay(t_win *win){
 			mx = (int)(rx)>>6;
 			my = (int)(ry)>>6;
 			mp = my * mapX+mx;
-			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) { hx = rx; hy = ry; disH = dist(win->player.px , win->player.py, hx , hy, ra); dof = 8;}
+			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) { hx = rx; hy = ry; disH = dist(win->player.px , win->player.py, hx , hy); dof = 8;}
 			else {rx+=xo; ry+=yo; dof++;}
 		}
 		dof = 0;
@@ -212,7 +212,7 @@ int drawXRay(t_win *win){
 			mx = (int)(rx)>>6;
 			my = (int)(ry)>>6;
 			mp = my * mapX+mx;
-			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) {vx = rx; vy = ry; disV = dist(win->player.px , win->player.py, vx , vy, ra);dof = 8;}
+			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) {vx = rx; vy = ry; disV = dist(win->player.px , win->player.py, vx , vy);dof = 8;}
 			else {rx+=xo; ry+=yo; dof++;}
 		}
 		int shade = 0xffffff;
@@ -247,15 +247,15 @@ int drawXRay(t_win *win){
 			ca -=2*PI;
 		}
 		disT = disT * cos(ca);
-		float lineH = (mapS * 520) / disT;
+		float lineH = (mapS * 512) / disT;
 		float ty_step = 64.0 / (float)lineH;
 		float ty_off = 0;
-		if (lineH > 520)
+		if (lineH > 512)
 		{
-			ty_off = (lineH-520) / 2.0;
-			lineH = 520;
+			ty_off = (lineH-512) / 2.0;
+			lineH = 512;
 		}
-		float lineO = 160 - lineH / 2;
+		float lineO = 256 - lineH / 2;
 		float ty = ty_off * ty_step;
 		float tx = (int)((ry + rx))%64;
 		for (int y = 0; y < lineH; y++){
@@ -369,16 +369,16 @@ int main()
 	t_win win;
 	win.mlx = mlx_init();
 	win.win = mlx_new_window(win.mlx, 1024, 512, "Tutorial Window - Create Image");
-	win.temp.height = 512;
 	win.temp.width = 1024;
+	win.temp.height = 512;
 	win.temp.img = mlx_new_image(win.mlx, win.temp.width, win.temp.height);
 	win.temp.buffer = (int *)mlx_get_data_addr(win.temp.img, &win.temp.pixel_bits, &win.temp.line_bytes, &win.temp.endian);
 	templateBlack(&win.temp);
 	win.player.width = 10;
 	win.player.height = 10;
 	win.player.color = 0x0000FF00;
-	win.player.px = 300;
-	win.player.py = 300;
+	win.player.px = 70;
+	win.player.py = 70;
 	win.player.pdx = cos(win.player.pa) * 5;
 	win.player.pdy = sin(win.player.pa) * 5;
 	win.player.pa = 0;
@@ -393,7 +393,7 @@ int main()
 	win.wall.width = 8;
 	win.wall.color = 0x00FF00FF;
 	int a, b;
-	void *qwe = mlx_xpm_file_to_image(win.mlx, "textures/checkmate.xpm", &a, &b);
+	void *qwe = mlx_xpm_file_to_image(win.mlx, "textures/brick.xpm", &a, &b);
 	win.wall.img = mlx_new_image(win.mlx, a, b);
 	win.wall.buffer = (int *)mlx_get_data_addr(qwe, &win.wall.pixel_bits, &win.wall.line_bytes, &win.wall.endian);
 //	makecolor(&win.wall);

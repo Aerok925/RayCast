@@ -13,7 +13,7 @@ LIBFT	=	/libft/libft.a
 
 CC		= gcc
 
-CFLAGS	+=
+CFLAGS	+= -Wall -Wextra -Werror
 
 CFLAGS	+= -I$I
 
