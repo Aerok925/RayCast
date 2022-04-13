@@ -142,11 +142,11 @@ void makecolor(t_img *line)
 			line->buffer[y * line->height + x] = line->color;
 }
 
-void setImgtoTemplate123(t_template *temp, t_img *img )
+void setImgtoTemplate123(t_template *temp, t_img *img, int qwe )
 {
 //	for (int y = 0; y < 8; y++)
-		for (int x = 0; x < 8; x++)
-		temp->buffer[((int)img->px + x) + ((int)img->py) * temp->width] = img->color;
+		for (int x = 0; x < qwe; x++)
+		temp->buffer[((int)img->px + x) + ((int)img->py) * temp->width] = img->buffer[(int)img->x1 + (int)x ];
 }
 
 
@@ -215,14 +215,14 @@ int drawXRay(t_win *win){
 			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) {vx = rx; vy = ry; disV = dist(win->player.px , win->player.py, vx , vy);dof = 8;}
 			else {rx+=xo; ry+=yo; dof++;}
 		}
-		int shade = 0xffffff;
+		float shade = 1;
 		if (disV < disH){
 			rx = vx;
 			ry = vy;
 			disT = disV;
-			shade = 0x010101;
+			shade = 0.5;
 		}
-		if (disV > disH)
+		if (disV >= disH)
 		{
 			rx = hx;
 			ry = hy;
@@ -257,15 +257,21 @@ int drawXRay(t_win *win){
 		}
 		float lineO = 256 - lineH / 2;
 		float ty = ty_off * ty_step;
-		float tx = (int)((ry + rx))%64;
+		float tx;
+		if (shade == 1)
+		{tx = (int)((rx / 2.0))%32;}
+		else
+			tx = (int)((ry / 2.0))%32;
+//		printf("%f \n", ty);
 		for (int y = 0; y < lineH; y++){
-			win->wall.px = r * 8 + 530;
-			win->wall.py = y + lineO;
-			win->wall.x1 = (int)(ty) * 64 + (int)tx;
-			win->wall.color = win->wall.buffer[(int)win->wall.x1];
-//			printf("%f \n", win->wall.x1);
+//			printf("%f \n", lineH);
+				win->wall.px = r * 8  + 512;
+				win->wall.py = y + lineO;
+				win->wall.x1 = (int)(ty) * 64 + (int)tx ;
+				win->wall.color = win->wall.buffer[(int)win->wall.x1];
+				//			printf("%f \n", win->wall.x1);
+				setImgtoTemplate123(&win->temp, &win->wall, 7);
 
-			setImgtoTemplate123(&win->temp, &win->wall);
 //			setImgtoTemplate(&win->wall, &win->temp);
 			ty+=ty_step;
 		}
