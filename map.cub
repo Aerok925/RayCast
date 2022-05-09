@@ -1,6 +1,6 @@
-NO textures/1.xpm
-SO textures/1.xpm
-WE textures/1.xpm
+NO textures/brick.xpm
+SO textures/banner.xpm
+WE textures/door.xpm
 EA textures/1.xpm
 
 F 220,100,0

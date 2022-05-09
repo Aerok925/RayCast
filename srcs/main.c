@@ -4,11 +4,9 @@
 #include "../incs/parse_map.h"
 #include <string.h>
 
-#define mapWidth 24
-#define mapHeight 24
-#define screenWidth 1920
-#define screenHeight 1080
-#define RED 0xF0FF0000
+#define screenWidth 960
+#define screenHeight 600
+#define RED 0x00FF0000
 #define BLUE 0x000000FF
 #define GREEN 0x0000FF00
 #define WHITE 0x00FFFFFF
@@ -17,11 +15,14 @@
 #define DARKGREEN 0x88006400
 #define INDIANRED 0x88CD5C5C
 #define TRANSPARENT 0xFF000000
+#define SKY 0x0000BFFF
+#define FLOOR 0x004B0082
 #define KEY_W 13
 #define KEY_A 0
 #define KEY_S 1
 #define KEY_D 2
-#define WIDTH_MINI 16
+#define WIDTH_MINI (int)(screenWidth/screenHeight*7)
+#define WIDHT_HERO (int)(WIDTH_MINI/1.5)
 
 typedef struct s_img{
 	double posX;  //x and y start position
@@ -62,6 +63,12 @@ typedef struct s_minimap{
 	t_template	transparent;
 }	t_minimap;
 
+typedef struct s_hero{
+	t_template	temp;
+	double		x;
+	double		y;
+}	t_hero;
+
 typedef struct s_win{
 	void		*mlx;
 	void		*win;
@@ -73,11 +80,13 @@ typedef struct s_win{
 	t_template	W;
 	t_template	E;
 	t_minimap 	map;
+	t_hero		hero;
+	t_map		*maps;
 } t_win;
 
 
 
-int worldMap[mapWidth][mapHeight] =
+int worldMap1[24][24] =
 		{
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -105,15 +114,32 @@ int worldMap[mapWidth][mapHeight] =
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 		};
 
-void color_in_template(t_template *temp)
-{
-	for (int y = 0; y < screenHeight; y++)
-	{
-		for (int x = 0; x < screenWidth; x++)
-		temp->buffer[x + y * screenWidth] = BLACK;
-	}
-
-}
+int worldMap[24][10] = {
+{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 1, 1 , 0, 0, 0, 0, 0, 1},
+{1, 0, 1, 1 , 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 1, 1, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 2, 2, 1, 0, 0, 0, 0, 1},
+{1, 1, 2, 2, 1, 0, 0, 0, 0, 1},
+{1, 1, 2, 2, 1, 0, 0, 0, 0, 1},
+{1, 1, 2, 2, 1, 0, 0, 0, 0, 1},
+{1, 1, 2, 2, 1, 0, 0, 0, 0, 1},
+{1, 1, 2, 2, 1, 0, 0, 0, 0, 1},
+{1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
 
 void drawfullline(t_win *win, t_line *line)
 {
@@ -206,7 +232,7 @@ void raycast(t_win *win, t_img *player){
 				side = 1;
 			}
 			//Check if ray has hit a wall
-			if(worldMap[mapX][mapY] > 0)
+			if(worldMap[mapX][mapY] == 1)
 				hit = 1;
 		}
 		if(side == 0) perpWallDist = (sideDistX - deltaDistX);
@@ -234,29 +260,38 @@ void raycast(t_win *win, t_img *player){
 		if(side == 1 && rayDirY < 0) texX = win->W.width - texX - 1;
 		double step = 1.0 * win->W.width / lineHeight;
 		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
+		//sky
+
+		win->line.x0 = x;
+		win->line.x1 = x;
+		win->line.y0 = 0;
+		win->line.y1 = drawStart;
+		win->line.color = SKY;
+		drawfullline(win, &win->line);
+		//floor
+		win->line.y0 = drawEnd - 1;
+		win->line.y1 = screenHeight - 1;
+		win->line.color = FLOOR;
+		drawfullline(win, &win->line);
 		for (int y = drawStart; y < drawEnd; y++){
 			int texY = (int)texPos & (win->W.height - 1);
 			texPos += step;
 			if (side == 0 && rayDirX >= 0)
-				win->temp.buffer[x + y * screenWidth] = win->W.buffer[win->W.width * texY + texX];
-			else if (side == 0 && rayDirX < 0)
 				win->temp.buffer[x + y * screenWidth] = win->S.buffer[win->S.width * texY + texX];
-			else if (side == 1 && rayDirY < 0)
-				win->temp.buffer[x + y * screenWidth] = win->E.buffer[win->E.width * texY + texX];
-			else if (side == 1 && rayDirY >= 0)
+			else if (side == 0 && rayDirX < 0)
 				win->temp.buffer[x + y * screenWidth] = win->N.buffer[win->N.width * texY + texX];
+			else if (side == 1 && rayDirY < 0)
+				win->temp.buffer[x + y * screenWidth] = win->W.buffer[win->W.width * texY + texX];
+			else if (side == 1 && rayDirY >= 0)
+				win->temp.buffer[x + y * screenWidth] = win->E.buffer[win->E.width * texY + texX];
 		}
+
+
+
 	}
+
 	player->moveSpeed = 0.2;
 	player->rotSpeed =  0.1;
-}
-void drawminimap(t_win *win)
-{
-	for (int y = 0; y < win->map.map.width; y++){
-		for (int x = 0; x < win->map.map.height; x++){
-			win->temp.buffer[x + y * screenWidth] = win->map.map.buffer[x + y * win->map.map.width];
-		}
-	}
 }
 
 void setImgtoTemplate(t_template *in, t_template *from, int x1, int y1)
@@ -270,19 +305,36 @@ void setImgtoTemplate(t_template *in, t_template *from, int x1, int y1)
 	}
 }
 
+void draw_hero(t_win *win)
+{
+	win->hero.y = win->player.posX * WIDTH_MINI - win->hero.temp.width / 2;
+	win->hero.x = win->player.posY * WIDTH_MINI - win->hero.temp.width / 2;
+	setImgtoTemplate(&win->temp, &win->hero.temp, (int)win->hero.x, (int)win->hero.y);
+//	mlx_put_image_to_window(win->mlx, win->win, win->hero.temp.img, win->hero.x, win->hero.y);
+}
+
+void drawall(t_win *win)
+{
+	raycast(win, &win->player);
+	setImgtoTemplate(&win->temp, &win->map.map, 0, 0);
+	mlx_clear_window(win->mlx, win->win);
+	mlx_put_image_to_window(win->mlx, win->win, win->temp.img, 0, 0);
+	draw_hero(win);
+}
+
 int pressButton(int key, t_win *win){
 	if (key == KEY_W)
 	{
-		if (worldMap[(int)(win->player.posX + win->player.dirX * win->player.moveSpeed)][(int)win->player.posY] == 0)
+		if (worldMap[(int)(win->player.posX + win->player.dirX * win->player.moveSpeed)][(int)win->player.posY] != 1)
 			win->player.posX += win->player.dirX * win->player.moveSpeed;
-		if(worldMap[(int)win->player.posX][(int)(win->player.posY + win->player.dirY * win->player.moveSpeed)] == 0)
+		if(worldMap[(int)win->player.posX][(int)(win->player.posY + win->player.dirY * win->player.moveSpeed)] != 1)
 			win->player.posY += win->player.dirY * win->player.moveSpeed;
 	}
 	if (key == KEY_S)
 	{
-		if(worldMap[(int)(win->player.posX - win->player.dirX * win->player.moveSpeed)][(int)(win->player.posY)] == 0)
+		if(worldMap[(int)(win->player.posX - win->player.dirX * win->player.moveSpeed)][(int)(win->player.posY)] != 1)
 			win->player.posX -= win->player.dirX * win->player.moveSpeed;
-		if(worldMap[(int)(win->player.posX)][(int)(win->player.posY - win->player.dirY * win->player.moveSpeed)] == 0)
+		if(worldMap[(int)(win->player.posX)][(int)(win->player.posY - win->player.dirY * win->player.moveSpeed)] != 1)
 			win->player.posY -= win->player.dirY * win->player.moveSpeed;
 	}
 	if (key == KEY_A)
@@ -303,12 +355,7 @@ int pressButton(int key, t_win *win){
 		win->player.planeX = win->player.planeX * cos(-win->player.rotSpeed) - win->player.planeY * sin(-win->player.rotSpeed);
 		win->player.planeY = oldPlaneX * sin(-win->player.rotSpeed) + win->player.planeY * cos(-win->player.rotSpeed);
 	}
-	color_in_template(&win->temp);
-	raycast(win, &win->player);
-//	setImgtoTemplate(&win->temp, &win->map.map, 0, 0);
-	mlx_clear_window(win->mlx, win->win);
-	mlx_put_image_to_window(win->mlx, win->win, win->temp.img, 0, 0);
-	mlx_put_image_to_window(win->mlx, win->win, win->map.map.img, 0, 0);
+	drawall(win);
 	return 0;
 }
 
@@ -324,6 +371,7 @@ void create_mini_wall(t_win *win)
 	win->map.wall.height = WIDTH_MINI;
 	win->map.wall.img = mlx_new_image(win->mlx, win->map.wall.width, win->map.wall.height);
 	win->map.wall.buffer = (int *)mlx_get_data_addr(win->map.wall.img, &win->map.wall.pixel_bits, &win->map.wall.line_bytes, &win->map.wall.endian);
+
 	for (int y = 0; y < win->map.wall.height; y++)
 		for (int x = 0; x < win->map.wall.width; x++)
 		{
@@ -360,16 +408,16 @@ void create_mini_transparent(t_win *win)
 		}
 }
 
-
-
 void inicialization_minimap(t_win *win)
 {
 	create_mini_wall(win);
 	create_mini_floor(win);
 	create_mini_transparent(win);
-	win->map.map.width = mapWidth * WIDTH_MINI;
-	win->map.map.height = mapHeight * WIDTH_MINI;
-	win->map.map.img = mlx_new_image(win->mlx, mapWidth * WIDTH_MINI, mapHeight * WIDTH_MINI);
+	win->map.map.width = win->maps->width * WIDTH_MINI;
+	win->map.map.height = win->maps->height * WIDTH_MINI;
+	printf("%d \n", win->map.map.width);
+	printf("%d \n", win->map.map.height);
+	win->map.map.img = mlx_new_image(win->mlx, win->maps->width * WIDTH_MINI, win->maps->height * WIDTH_MINI);
 	win->map.map.buffer = (int *) mlx_get_data_addr(win->map.map.img, &win->map.map.pixel_bits, &win->map.map.line_bytes, &win->map.map.endian);
 	for (int y = 0; y < win->map.map.height / WIDTH_MINI; y++)
 	{
@@ -386,41 +434,68 @@ void inicialization_minimap(t_win *win)
 
 }
 
+void create_hero(t_win *win)
+{
+	win->hero.temp.width = WIDHT_HERO;
+	win->hero.temp.height = WIDHT_HERO;
+	win->hero.temp.img = mlx_new_image(win->mlx, win->hero.temp.width, win->hero.temp.height);
+	win->hero.temp.buffer = (int *) mlx_get_data_addr(win->hero.temp.img, &win->hero.temp.pixel_bits, &win->hero.temp.line_bytes, &win->hero.temp.endian);
+	for (int y = 0; y < win->hero.temp.height; y++)
+		for (int x = 0; x < win->hero.temp.width; x++)
+			win->hero.temp.buffer[y * win->hero.temp.width + x] = BLUE;
+}
+
+
+
 int main(){
 	t_win		win;
 
+	win.maps = parser_map("map.cub");
+	int i = 0;
+	if (win.maps == NULL)
+		return 0;
+	while (win.maps->all_map[i]){
+		printf("%s \n", win.maps->all_map[i++]);
+	}
+	win.maps->width = 10;
+	win.maps->height = 24;
+	win.maps->x = 1.5;
+	win.maps->y = 1.5;
 	win.mlx = mlx_init();
 	win.temp.width = screenWidth;
 	win.temp.height = screenHeight;
 	win.temp.img = mlx_new_image(win.mlx, screenWidth, screenHeight);
 	win.temp.buffer = (int *) mlx_get_data_addr(win.temp.img, &win.temp.pixel_bits, &win.temp.line_bytes, &win.temp.endian);
 	win.win = mlx_new_window(win.mlx, screenWidth, screenHeight, "cub3d");
-	win.player.posX = 1.5;
-	win.player.posY = 1.5;
+	win.player.posX = win.maps->x;
+	win.player.posY = win.maps->y;
+
+	//смотрим на юг
+//	win.player.dirX = 1.0;
+//	win.player.dirY = 0.0;
+//	win.player.planeX = 0;
+//	win.player.planeY = -0.66;
+
+
 	win.player.dirX = 1.0;
-	win.player.dirY = 0.0;
+	win.player.dirY = -0.0;
 	win.player.planeX = 0;
 	win.player.planeY = -0.66;
 	win.player.time = 0;
 	win.player.oldTime = 0;
-	win.W.name = "textures/banner.xpm";
-	win.S.name = "textures/brick.xpm";
-	win.E.name = "textures/1.xpm";
-	win.N.name = "textures/door.xpm";
-
+	win.W.name = win.maps->west;
+	win.S.name = win.maps->south;
+	win.E.name = win.maps->east;
+	win.N.name = win.maps->north;
 
 	create_adr_wall(&win, &win.W);
 	create_adr_wall(&win, &win.S);
 	create_adr_wall(&win, &win.E);
 	create_adr_wall(&win, &win.N);
 //	printf("%d %d\n", win.W.height, win.W.width);
+	create_hero(&win);
 	inicialization_minimap(&win);
-
-	color_in_template(&win.temp);
-	raycast(&win, &win.player);
-//	setImgtoTemplate(&win.temp, &win.map.map, 0, 0);
-	mlx_put_image_to_window(win.mlx, win.win, win.temp.img, 0, 0);
-	mlx_put_image_to_window(win.mlx, win.win, win.map.map.img, 0, 0);
+	drawall(&win);
 	mlx_hook(win.win, 2, 1L << 0, pressButton, &win);
 	mlx_loop(win.mlx);
 }
