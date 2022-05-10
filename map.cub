@@ -1,7 +1,7 @@
 NO textures/1.xpm
-SO textures/1.xpm
-WE textures/1.xpm
-EA textures/1.xpm
+SO textures/door.xpm
+WE textures/checkmate.xpm
+EA textures/banner.xpm
 
 F 220,100,0
 C 225,30,0

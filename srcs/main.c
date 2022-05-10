@@ -1,410 +1,305 @@
 #include "../incs/struct_map.h"
 #include "../incs/mlx.h"
-#include "math.h"
+#include"../incs/raycast.h"
 #include "../incs/parse_map.h"
+#include "../incs/s_win.h"
+#include <string.h>
 
-#define PI 3.1415926535
-#define P2 PI/2
-#define P3 3 * P2
-#define DR 0.0174533
+int worldMap1[24][24] =
+		{
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,1,0,1,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+		};
 
-typedef struct s_template{
-	int		height;
-	int		width;
-	void	*img;
-	int	*buffer;
-	int		pixel_bits;
-	int		line_bytes;
-	int		endian;
-} t_template;
-
-typedef struct s_img{
-	int		color;
-	float	px;
-	float	py;
-	void	*img;
-	int		*buffer;
-	int		pixel_bits;
-	int		line_bytes;
-	int		endian;
-	float		x1;
-	float		y1;
-	int		width;
-	int		height;
-	float	pdx;
-	float	pdy;
-	float	pa;
-} t_img;
-
-typedef struct s_win{
-	void		*mlx;
-	void		*win;
-	t_template	temp;
-	t_img		player;
-	t_img		map[64];
-	t_img		line;
-	t_img		wall;
-} t_win;
-
-int mapX = 8, mapY = 8, mapS = 64;
-int mapq[] = {
-		1, 1, 1, 1, 1, 1, 1, 1,
-		1, 0, 1, 0, 0, 0, 0, 1,
-		1, 0, 1, 0, 0, 0, 0, 1,
-		1, 0, 1, 0, 0, 0, 0, 1,
-		1, 0, 0, 0, 0, 0, 0, 1,
-		1, 0, 0, 0, 1, 0, 0, 1,
-		1, 0, 0, 0, 1, 0, 0, 1,
-		1, 1, 1, 1, 1, 1, 1, 1
+int worldMap[24][10] = {
+{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 1, 1 , 0, 0, 0, 0, 0, 1},
+{1, 0, 1, 1 , 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 1, 1, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 0, 0, 1, 0, 0, 0, 0, 1},
+{1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
-void setImgtoTemplate(t_img *img, t_template *temp)
+void raycast(t_win *win, t_img *player)
 {
-	for (int y = 0; y < img->height; y++)
+	int		x;
+	t_math	math;
+
+	x = 0;
+	while (x < screenWidth)
 	{
-		for (int x = 0; x < img->width; x++)
+		math.cameraX = (2 * x / (double)screenWidth - 1);
+		first_calculate(&math, player);
+		found_step(&math, player);
+		while (math.hit == 0)
 		{
-			temp->buffer[(int)(y + img->py) * temp->width + (int)(x + img->px)] = img->buffer[y * img->width + x ];
+			check_dist(&math);
+			if(worldMap[math.mapX][math.mapY] == 1)
+				math.hit = 1;
 		}
+		found_x_y_tex(&math, player, win);
+		draw_sky_and_floor(win, &math, x);
+		draw_textures(win, &math, x);
+		x++;
 	}
 }
 
-void drawfullline(t_win *win, t_img *img)
+void setImgtoTemplate(t_template *in, t_template *from, int x1, int y1)
 {
-	int x_err = 0, y_err = 0;
-	int dx = img->x1 - img->px; int dy = img->y1 - img->py;
-	int incX = 0; int incY = 0;
-	if (dx>0) {incX=1; }else if (dx!=0) incX=-1;
-	if (dy>0) {incY=1; }else if (dy!=0) incY=-1;
-	dx = abs(dx);
-	dy = abs(dy);
-	int d;
-	if (dx > dy)
-		d = dx;
-	else
-		d = dy;
-//	printf("%d \n ", d);
-	float x = img->px;
-	float y = img->py;
-//	mlx_put_image_to_window(image->mlx, image->win, line->image,x, y);
-	for (int i = 1; i <= d; i++){
-		x_err +=dx;
-		y_err += dy;
-		if (x_err>=d)
-		{
-			x+=incX;
-			x_err-=d;
-		}
-		if (y_err >= d){
-			y+=incY;
-			y_err-=d;
-		}
-		float defx, defy;
-		defx = img->px;
-		defy = img->py;
-		img->px = x;
-		img->py = y;
-		setImgtoTemplate(img, &win->temp);
-		img->px = defx;
-		img->py = defy;
-	}
-}
-
-float dist(float ax, float ay, float bx, float by)
-{
-	return (sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay)));
-}
-
-
-
-
-int		create_trgb(int t, int r, int g, int b)
-{
-	return(t << 24 | r << 16 | g << 8 | b);
-}
-
-void templateBlack(t_template *temp){
-	int color = 0x000000;
-//	int white = 0xFFFFFF;
-	for (int y = 0; y < temp->height; y++)
+	for (int y = 0; y < from->height; y++)
 	{
-		for (int x = 0; x < temp->width; x++)
+		for (int x = 0; x < from->width; x++)
 		{
-			temp->buffer[y * temp->width + x] = color;
+			in->buffer[(int)(y + y1) * in->width + (int)(x + x1)] = from->buffer[y * from->width + x];
 		}
 	}
 }
 
-void makecolor(t_img *line)
+void draw_hero(t_win *win)
 {
-	for (int y = 0; y < line->height; y++)
-		for (int x = 0; x < line->width; x++)
-			line->buffer[y * line->height + x] = line->color;
+	win->hero.y = win->player.posX * WIDTH_MINI - win->hero.temp.width / 2;
+	win->hero.x = win->player.posY * WIDTH_MINI - win->hero.temp.width / 2;
+	setImgtoTemplate(&win->temp, &win->hero.temp, (int)win->hero.x, (int)win->hero.y);
+//	mlx_put_image_to_window(win->mlx, win->win, win->hero.temp.img, win->hero.x, win->hero.y);
 }
 
-void setImgtoTemplate123(t_template *temp, t_img *img )
+void drawall(t_win *win)
 {
-//	for (int y = 0; y < 8; y++)
-		for (int x = 0; x < 8; x++)
-		temp->buffer[((int)img->px + x) + ((int)img->py) * temp->width] = img->color;
-}
-
-
-int drawXRay(t_win *win){
-
-	win->line.px = win->player.px + 5 - win->line.width / 2;
-	win->line.py = win->player.py + 5 - win->line.height / 2;
-	int r, mx, my, mp, dof;
-	float  rx, ry, ra, xo, yo, disT;
-	ra = win->player.pa;
-	int disH, hx, hy;
-	int disV, vx, vy;
-	ra = win->player.pa - DR * 30;
-	if (ra < 0){
-		ra+=2*PI;
-	}
-	if (ra >2 * PI)
-	{
-		ra -=2*PI;
-	}
-	for (r = 0; r < 60; r++){
-//		printf("%f \n", ra);
-		dof = 0;
-		disH = 1000000, hx = win->player.px, hy = win->player.py;
-		float aTan =-1/ tan(ra);
-		if (ra > PI) {
-			ry = (((int)win->player.py>>6)<<6)-0.0001;
-			rx = (win->player.py - ry) * aTan+win->player.px;
-			yo = -64; xo = -yo*aTan;
-		}
-		if (ra < PI) {
-			ry = (((int)win->player.py>>6)<<6)+64;
-			rx = (win->player.py - ry) * aTan + win->player.px;
-			yo = 64; xo = -yo*aTan;
-		}
-		if (ra == 0 || ra == PI){
-			rx = win->player.px; ry = win->player.py; dof = 8;
-		}
-		while (dof < 8){
-			mx = (int)(rx)>>6;
-			my = (int)(ry)>>6;
-			mp = my * mapX+mx;
-			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) { hx = rx; hy = ry; disH = dist(win->player.px , win->player.py, hx , hy); dof = 8;}
-			else {rx+=xo; ry+=yo; dof++;}
-		}
-		dof = 0;
-		disV = 1000000, vx = win->player.px, vy = win->player.py;
-		float nTan =-tan(ra);
-		if (ra > P2 && ra<P3) {
-			rx = (((int)win->player.px>>6)<<6)-0.0001;
-			ry = (win->player.px - rx) * nTan+win->player.py;
-			xo = -64; yo = -xo*nTan;
-		}
-		if (ra < P2 || ra > P3) {
-			rx = (((int)win->player.px>>6)<<6)+64;
-			ry = (win->player.px - rx) * nTan + win->player.py;
-			xo = 64; yo = -xo*nTan;
-		}
-		if (ra == 0 || ra == PI){
-			rx = win->player.px; ry = win->player.py; dof = 8;
-		}
-		while (dof < 8){
-			mx = (int)(rx)>>6;
-			my = (int)(ry)>>6;
-			mp = my * mapX+mx;
-			if (mp > 0 && mp<mapX*mapY && mapq[mp] == 1) {vx = rx; vy = ry; disV = dist(win->player.px , win->player.py, vx , vy);dof = 8;}
-			else {rx+=xo; ry+=yo; dof++;}
-		}
-		int shade = 0xffffff;
-		if (disV < disH){
-			rx = vx;
-			ry = vy;
-			disT = disV;
-			shade = 0x010101;
-		}
-		if (disV > disH)
-		{
-			rx = hx;
-			ry = hy;
-			disT = disH;
-		}
-		win->line.x1 = rx;
-		win->line.y1 = ry;
-		ra +=DR;
-		if (ra < 0){
-			ra+=2*PI;
-		}
-		if (ra >2 * PI)
-		{
-			ra -=2*PI;
-		}
-		float ca = win->player.pa - ra;
-		if (ca < 0){
-			ca+=2*PI;
-		}
-		if (ca >2 * PI)
-		{
-			ca -=2*PI;
-		}
-		disT = disT * cos(ca);
-		float lineH = (mapS * 512) / disT;
-		float ty_step = 64.0 / (float)lineH;
-		float ty_off = 0;
-		if (lineH > 512)
-		{
-			ty_off = (lineH-512) / 2.0;
-			lineH = 512;
-		}
-		float lineO = 256 - lineH / 2;
-		float ty = ty_off * ty_step;
-		float tx = (int)((ry + rx))%64;
-		for (int y = 0; y < lineH; y++){
-			win->wall.px = r * 8 + 530;
-			win->wall.py = y + lineO;
-			win->wall.x1 = (int)(ty) * 64 + (int)tx;
-			win->wall.color = win->wall.buffer[(int)win->wall.x1];
-//			printf("%f \n", win->wall.x1);
-
-			setImgtoTemplate123(&win->temp, &win->wall);
-//			setImgtoTemplate(&win->wall, &win->temp);
-			ty+=ty_step;
-		}
-
-		drawfullline(win, &win->line);
-
-	}
-	return (1);
-}
-
-int drawline(t_win *win){
-	win->line.px = win->player.px + 5 - win->line.width / 2;
-	win->line.x1 = (win->player.px + win->player.pdx * 5) + 5 - win->line.width / 2;
-	win->line.py = win->player.py + 5 - win->line.height;
-	win->line.y1 = (win->player.py + win->player.pdy * 5) + 5 - win->line.height;
-//	drawfullline(win, &win->line);
-	drawXRay(win);
-	return 1;
-}
-
-
-void makemap(t_win *img)
-{
-	int black = 0x00FF0000;
-	int white = 0x00FFFFFF;
-	for (int i = 0; i < 64; i++)
-	{
-		img->map[i].width = 63;
-		img->map[i].height = 63;
-		img->map[i].img = mlx_new_image(img->mlx, 64 - 1, 64 - 1);
-		img->map[i].buffer = (int *)mlx_get_data_addr(img->map[i].img, &img->map[i].pixel_bits, &img->map[i].line_bytes, &img->map[i].endian);
-	}
-	for (int j = 0; j < 64; j++)
-	{
-		for(int y = 0; y < 64; ++y){
-			for(int x = 0; x < 64; ++x)
-			{
-				if (mapq[j] == 1)
-				{
-					img->map[j].buffer[y * img->map[j].width + x ] = black;
-				} else
-				{
-					img->map[j].buffer[y * img->map[j].width + x ] = white;
-				}
-			}
-		}
-	}
-	for (int y = 0; y < 8; y++){
-		for (int x = 0; x < 8;x++)
-		{
-			img->map[y * mapX + x].px = (double)x * (double)64;
-			img->map[y * mapX + x].py = (double)y * (double)64;
-		}
-	}
-}
-
-int drawMap(t_win *img){
-	for (int i = 0; i < 64; i++)
-		setImgtoTemplate(&img->map[i], &img->temp);
-	return 0;
+	raycast(win, &win->player);
+	setImgtoTemplate(&win->temp, &win->map.map, 0, 0);
+	mlx_clear_window(win->mlx, win->win);
+	mlx_put_image_to_window(win->mlx, win->win, win->temp.img, 0, 0);
+	draw_hero(win);
 }
 
 int pressButton(int key, t_win *win){
-	if (key == 2){
-		win->player.pa+=0.1;
-		if (win->player.pa > PI * 2){
-			win->player.pa -= PI * 2;
-		}
-		win->player.pdx = cos(win->player.pa) * 5;
-		win->player.pdy = sin(win->player.pa) * 5;
+	if (key == KEY_W)
+	{
+		if (worldMap[(int)(win->player.posX + win->player.dirX * win->player.moveSpeed)][(int)win->player.posY] != 1)
+			win->player.posX += win->player.dirX * win->player.moveSpeed;
+		if(worldMap[(int)win->player.posX][(int)(win->player.posY + win->player.dirY * win->player.moveSpeed)] != 1)
+			win->player.posY += win->player.dirY * win->player.moveSpeed;
 	}
-	if (key == 0){
-		win->player.pa-=0.1;
-		if (win->player.pa < 0){
-			win->player.pa += PI * 2;
-		}
-		win->player.pdx = cos(win->player.pa) * 5;
-		win->player.pdy = sin(win->player.pa) * 5;
+	if (key == KEY_S)
+	{
+		if(worldMap[(int)(win->player.posX - win->player.dirX * win->player.moveSpeed)][(int)(win->player.posY)] != 1)
+			win->player.posX -= win->player.dirX * win->player.moveSpeed;
+		if(worldMap[(int)(win->player.posX)][(int)(win->player.posY - win->player.dirY * win->player.moveSpeed)] != 1)
+			win->player.posY -= win->player.dirY * win->player.moveSpeed;
 	}
-	if (key == 1){
-		win->player.px-=win->player.pdx;
-		win->player.py-=win->player.pdy;
+	if (key == KEY_A)
+	{
+		double oldDirX = win->player.dirX;
+		win->player.dirX = win->player.dirX * cos(win->player.rotSpeed) - win->player.dirY * sin(win->player.rotSpeed);
+		win->player.dirY = oldDirX * sin(win->player.rotSpeed) + win->player.dirY * cos(win->player.rotSpeed);
+		double oldPlaneX = win->player.planeX;
+		win->player.planeX = win->player.planeX * cos(win->player.rotSpeed) - win->player.planeY * sin(win->player.rotSpeed);
+		win->player.planeY = oldPlaneX * sin(win->player.rotSpeed) + win->player.planeY * cos(win->player.rotSpeed);
 	}
-	if (key == 13){
-		win->player.px+=win->player.pdx;
-		win->player.py+=win->player.pdy;
+	if (key == KEY_D)
+	{
+		double oldDirX = win->player.dirX;
+		win->player.dirX = win->player.dirX * cos(-win->player.rotSpeed) - win->player.dirY * sin(-win->player.rotSpeed);
+		win->player.dirY = oldDirX * sin(-win->player.rotSpeed) + win->player.dirY * cos(-win->player.rotSpeed);
+		double oldPlaneX = win->player.planeX;
+		win->player.planeX = win->player.planeX * cos(-win->player.rotSpeed) - win->player.planeY * sin(-win->player.rotSpeed);
+		win->player.planeY = oldPlaneX * sin(-win->player.rotSpeed) + win->player.planeY * cos(-win->player.rotSpeed);
 	}
 	if (key == 53)
 		exit(1);
-	mlx_clear_window(win->mlx, win->win);
-	templateBlack(&win->temp);
-	drawMap(win);
-	drawline(win);
-	setImgtoTemplate(&win->player, &win->temp);
-	mlx_put_image_to_window(win->mlx, win->win, win->temp.img, 0, 0);
+	drawall(win);
 	return 0;
 }
 
-int main()
+void create_adr_wall(t_win	*win, t_template *temp)
 {
-	t_win win;
-	win.mlx = mlx_init();
-	win.win = mlx_new_window(win.mlx, 1024, 512, "Tutorial Window - Create Image");
-	win.temp.width = 1024;
-	win.temp.height = 512;
-	win.temp.img = mlx_new_image(win.mlx, win.temp.width, win.temp.height);
-	win.temp.buffer = (int *)mlx_get_data_addr(win.temp.img, &win.temp.pixel_bits, &win.temp.line_bytes, &win.temp.endian);
-	templateBlack(&win.temp);
-	win.player.width = 10;
-	win.player.height = 10;
-	win.player.color = 0x0000FF00;
-	win.player.px = 70;
-	win.player.py = 70;
-	win.player.pdx = cos(win.player.pa) * 5;
-	win.player.pdy = sin(win.player.pa) * 5;
-	win.player.pa = 0;
-	win.player.img = mlx_new_image(win.mlx, win.player.width, win.player.height);
-	win.player.buffer = (int *)mlx_get_data_addr(win.player.img, &win.player.pixel_bits, &win.player.line_bytes, &win.player.endian);
-	win.line.height = 1;
-	win.line.width = 1;
-	win.line.color = 0x000000FF;
-	win.line.img = mlx_new_image(win.mlx, win.line.width, win.line.height);
-	win.line.buffer = (int *)mlx_get_data_addr(win.line.img, &win.line.pixel_bits, &win.line.line_bytes, &win.line.endian);
-	win.wall.height = 8;
-	win.wall.width = 8;
-	win.wall.color = 0x00FF00FF;
-	int a, b;
-	void *qwe = mlx_xpm_file_to_image(win.mlx, "textures/brick.xpm", &a, &b);
-	win.wall.img = mlx_new_image(win.mlx, a, b);
-	win.wall.buffer = (int *)mlx_get_data_addr(qwe, &win.wall.pixel_bits, &win.wall.line_bytes, &win.wall.endian);
-//	makecolor(&win.wall);
+	temp->img = mlx_xpm_file_to_image(win->mlx, temp->name, &temp->width, &temp->height);
+	printf("%d %d\n", temp->width, temp->height);
+	temp->buffer = (int *) mlx_get_data_addr(temp->img, &temp->pixel_bits, &temp->line_bytes, &temp->endian);
+}
 
-	makecolor(&win.line);
-	makemap(&win);
-	drawMap(&win);
-	makecolor(&win.player);
-	setImgtoTemplate(&win.player, &win.temp);
-	drawline(&win);
-	mlx_put_image_to_window(win.mlx, win.win, win.temp.img, 0, 0);
+void create_mini_wall(t_win *win)
+{
+	win->map.wall.width = WIDTH_MINI;
+	win->map.wall.height = WIDTH_MINI;
+	win->map.wall.img = mlx_new_image(win->mlx, win->map.wall.width, win->map.wall.height);
+	win->map.wall.buffer = (int *)mlx_get_data_addr(win->map.wall.img, &win->map.wall.pixel_bits, &win->map.wall.line_bytes, &win->map.wall.endian);
+
+	for (int y = 0; y < win->map.wall.height; y++)
+		for (int x = 0; x < win->map.wall.width; x++)
+		{
+			if (y == WIDTH_MINI - 1 || x == WIDTH_MINI - 1)
+				win->map.wall.buffer[x + y * win->map.wall.width] = DARKGREEN;
+			else
+				win->map.wall.buffer[x + y * win->map.wall.width] = INDIANRED;
+		}
+}
+
+void create_mini_floor(t_win *win)
+{
+	win->map.floor.width = WIDTH_MINI;
+	win->map.floor.height = WIDTH_MINI;
+	win->map.floor.img = mlx_new_image(win->mlx, win->map.floor.width, win->map.floor.height);
+	win->map.floor.buffer = (int *)mlx_get_data_addr(win->map.floor.img, &win->map.floor.pixel_bits, &win->map.floor.line_bytes, &win->map.floor.endian);
+	for (int y = 0; y < win->map.floor.height; y++)
+		for (int x = 0; x < win->map.floor.width; x++)
+		{
+			win->map.floor.buffer[x + y * win->map.floor.width] = RED;
+		}
+}
+
+void create_mini_transparent(t_win *win)
+{
+	win->map.transparent.width = WIDTH_MINI;
+	win->map.transparent.height = WIDTH_MINI;
+	win->map.transparent.img = mlx_new_image(win->mlx, win->map.transparent.width, win->map.transparent.height);
+	win->map.transparent.buffer = (int *)mlx_get_data_addr(win->map.transparent.img, &win->map.transparent.pixel_bits, &win->map.transparent.line_bytes, &win->map.transparent.endian);
+	for (int y = 0; y < win->map.floor.height; y++)
+		for (int x = 0; x < win->map.floor.width; x++)
+		{
+			win->map.transparent.buffer[x + y * win->map.transparent.width] = TRANSPARENT;
+		}
+}
+
+void inicialization_minimap(t_win *win)
+{
+	create_mini_wall(win);
+	create_mini_floor(win);
+	create_mini_transparent(win);
+	win->map.map.width = win->maps->width * WIDTH_MINI;
+	win->map.map.height = win->maps->height * WIDTH_MINI;
+
+	win->map.map.img = mlx_new_image(win->mlx, win->maps->width * WIDTH_MINI, win->maps->height * WIDTH_MINI);
+	win->map.map.buffer = (int *) mlx_get_data_addr(win->map.map.img, &win->map.map.pixel_bits, &win->map.map.line_bytes, &win->map.map.endian);
+	for (int y = 0; y < win->map.map.height / WIDTH_MINI; y++)
+	{
+		for (int x = 0; x < win->map.map.width / WIDTH_MINI; x++)
+		{
+			if (worldMap[y][x] == 1)
+				setImgtoTemplate(&win->map.map, &win->map.wall, x * WIDTH_MINI, y * WIDTH_MINI);
+			else if (worldMap[y][x] == 0)
+				setImgtoTemplate(&win->map.map, &win->map.floor, x * WIDTH_MINI, y * WIDTH_MINI);
+			else
+				setImgtoTemplate(&win->map.map, &win->map.transparent, x * WIDTH_MINI, y * WIDTH_MINI);
+		}
+	}
+
+}
+
+void create_hero(t_win *win)
+{
+	win->hero.temp.width = WIDHT_HERO;
+	win->hero.temp.height = WIDHT_HERO;
+	win->hero.temp.img = mlx_new_image(win->mlx, win->hero.temp.width, win->hero.temp.height);
+	win->hero.temp.buffer = (int *) mlx_get_data_addr(win->hero.temp.img, &win->hero.temp.pixel_bits, &win->hero.temp.line_bytes, &win->hero.temp.endian);
+	for (int y = 0; y < win->hero.temp.height; y++)
+		for (int x = 0; x < win->hero.temp.width; x++)
+			win->hero.temp.buffer[y * win->hero.temp.width + x] = BLUE;
+}
+
+
+
+int main(){
+	t_win		win;
+
+	win.maps = parser_map("map.cub");
+	int i = 0;
+	if (win.maps == NULL)
+		return 0;
+	win.maps->width = 10;
+	win.maps->height = 24;
+	win.maps->x = 1.5;
+	win.maps->y = 1.5;
+	win.mlx = mlx_init();
+	win.temp.width = screenWidth;
+	win.temp.height = screenHeight;
+	win.temp.img = mlx_new_image(win.mlx, screenWidth, screenHeight);
+	win.temp.buffer = (int *) mlx_get_data_addr(win.temp.img, &win.temp.pixel_bits, &win.temp.line_bytes, &win.temp.endian);
+	win.win = mlx_new_window(win.mlx, screenWidth, screenHeight, "cub3d");
+	win.player.posX = win.maps->x;
+	win.player.posY = win.maps->y;
+
+	//смотрим на юг
+//	win.player.dirX = 1.0;
+//	win.player.dirY = 0.0;
+//	win.player.planeX = 0;
+//	win.player.planeY = -0.66;
+
+//nor
+//	win.player.dirX = -1.0;
+//	win.player.dirY = 0.0;
+//	win.player.planeX = 0;
+//	win.player.planeY = 0.66;
+
+
+//west
+//	win.player.dirX = 0;
+//	win.player.dirY = -1.0;
+//	win.player.planeX = -0.66;
+//	win.player.planeY = 0;
+
+//east
+	win.player.dirX = 0;
+	win.player.dirY = 1.0;
+	win.player.planeX = 0.66;
+	win.player.planeY = 0;
+	win.player.time = 0;
+	win.player.oldTime = 0;
+	win.player.moveSpeed = 0.2;
+	win.player.rotSpeed =  0.1;
+	win.W.name = win.maps->west;
+	win.S.name = win.maps->south;
+	win.E.name = win.maps->east;
+	win.N.name = win.maps->north;
+
+	create_adr_wall(&win, &win.W);
+	create_adr_wall(&win, &win.S);
+	create_adr_wall(&win, &win.N);
+	create_adr_wall(&win, &win.E);
+//	printf("%d %d\n", win.W.height, win.W.width);
+	create_hero(&win);
+	inicialization_minimap(&win);
+	drawall(&win);
 	mlx_hook(win.win, 2, 1L << 0, pressButton, &win);
 	mlx_loop(win.mlx);
 }
