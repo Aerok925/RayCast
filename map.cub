@@ -1,7 +1,7 @@
-NO textures/brick.xpm
-SO textures/banner.xpm
-WE textures/door.xpm
-EA textures/1.xpm
+NO textures/1.xpm
+SO textures/door.xpm
+WE textures/checkmate.xpm
+EA textures/banner.xpm
 
 F 220,100,0
 C 225,30,0

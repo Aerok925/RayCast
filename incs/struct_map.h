@@ -16,6 +16,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include "s_img.h"
+# include "all_define.h"
 
 typedef struct s_map{
 	char	**all_map;
@@ -35,5 +37,7 @@ typedef struct s_map{
 	//было бы не плохо цвета хранить сразу конвертированными в инт
 	//а еще бы сделать направление
 }	t_map;
+
+
 
 #endif /*STRUCT_MAP_H*/

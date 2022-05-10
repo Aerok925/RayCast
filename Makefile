@@ -7,7 +7,9 @@ NAME	= cub3d
 
 SRCS	= 	main.c parser_map.c \
 			check_valid.c correct_map_init.c \
-			free_functions.c init_paths_colors.c
+			free_functions.c init_paths_colors.c \
+			calculations_for_raycast.c \
+			draw_line.c
 
 LIBFT	=	/libft/libft.a
 
