@@ -16,7 +16,7 @@
 # include "../incs/check_valid.h"
 
 int		find_biggest_line(char **map);
-char	**correct_map(char **map);
+char	**correct_map(char **map, int i);
 int		count_str(char **strs);
 char	**str_array_dup(char **strs, int start, int finish);
 

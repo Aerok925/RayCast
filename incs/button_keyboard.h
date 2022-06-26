@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_paths_colors.h                                :+:      :+:    :+:   */
+/*   button_keyboard.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/12 18:24:23 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/12 18:24:23 by jkieth           ###   ########.fr       */
+/*   Created: 2022/05/17 16:13:29 by jkieth            #+#    #+#             */
+/*   Updated: 2022/05/17 16:13:29 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INIT_PATHS_COLORS_H
-# define INIT_PATHS_COLORS_H
-# include "parse_map.h"
+#ifndef BUTTON_KEYBOARD_H
+# define BUTTON_KEYBOARD_H
 
-int	init_path(t_map *map, char **full);
-int	pull_colors(t_map *map, char **str_array, int last, int i);
-int	paths_colors(t_map *map, char **full, int i);
-int	errors_paths_colors(int num, char **str_array1, char **str_array2);
-int	check_second_arg(char **str_array);
+# include "s_win.h"
 
-#endif /*INIT_PATHS_COLORS_H*/
+int	pressbutton(int key, t_win *win);
+int	pressbutton_no_bonus(int key, t_win *win);
+
+#endif /*BUTTON_KEYBOARD_H*/

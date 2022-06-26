@@ -1,26 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_map.h                                        :+:      :+:    :+:   */
+/*   s_win.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/10 20:58:31 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/10 21:01:05 by jkieth           ###   ########.fr       */
+/*   Created: 2022/05/17 16:21:09 by jkieth            #+#    #+#             */
+/*   Updated: 2022/05/17 16:21:09 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSE_MAP_H
-# define PARSE_MAP_H
-# include "../libft/libft.h"
+#ifndef S_WIN_H
+# define S_WIN_H
 # include "struct_map.h"
-# include "free_functions.h"
-# include "check_valid.h"
-# include "correct_map_init.h"
-# include "init_paths_colors.h"
-# include "parse_utils.h"
+# include "s_line.h"
+# include "s_minimap.h"
+# include "s_hero.h"
+# include "s_mouse.h"
 
-t_map	*parser_map(char *path);
-char	**read_file(char *file, int fd);
+typedef struct s_win{
+	void		*mlx;
+	void		*win;
+	t_template	temp;
+	t_img		player;
+	t_line		line;
+	t_template	n;
+	t_template	s;
+	t_template	w;
+	t_template	e;
+	t_minimap	map;
+	t_hero		hero;
+	t_map		*maps;
+	t_template	scope;
+	t_mouse		mouse;
+}	t_win;
 
-#endif /*PARSE_MAP_H*/
+#endif /*S_WIN_H*/

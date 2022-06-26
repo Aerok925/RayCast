@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_paths_colors.h                                :+:      :+:    :+:   */
+/*   parse_utils.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/12 18:24:23 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/12 18:24:23 by jkieth           ###   ########.fr       */
+/*   Created: 2022/05/14 18:05:48 by jkieth            #+#    #+#             */
+/*   Updated: 2022/05/14 18:05:48 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INIT_PATHS_COLORS_H
-# define INIT_PATHS_COLORS_H
-# include "parse_map.h"
+#ifndef PARSE_UTILS_H
+# define PARSE_UTILS_H
+# include "../libft/libft.h"
 
-int	init_path(t_map *map, char **full);
-int	pull_colors(t_map *map, char **str_array, int last, int i);
-int	paths_colors(t_map *map, char **full, int i);
-int	errors_paths_colors(int num, char **str_array1, char **str_array2);
-int	check_second_arg(char **str_array);
+int		rgb_to_int(int *rgb);
+int		count_lines(char **str);
+int		is_digit_space(char *str);
+char	*ft_charjoin(char *s1, char symbol);
+int		check_filename(char *filename);
 
-#endif /*INIT_PATHS_COLORS_H*/
+#endif /*PARSE_UTILS_H*/

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_no_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/17 16:23:53 by jkieth            #+#    #+#             */
-/*   Updated: 2022/05/17 16:23:53 by jkieth           ###   ########.fr       */
+/*   Created: 2022/05/17 16:23:58 by jkieth            #+#    #+#             */
+/*   Updated: 2022/05/17 16:23:58 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,8 @@
 #include"../incs/raycast.h"
 #include "../incs/s_win.h"
 #include "../incs/parse_map.h"
-#include <string.h>
-#include "../incs/minimap_bonus.h"
 #include "../incs/button_keyboard.h"
 #include "../incs/draw_all.h"
-#include "../incs/mouse_bonus.h"
 #include "../incs/init.h"
 
 void	draw_scope(t_win *win)
@@ -70,7 +67,6 @@ int	main(int argc, char **argv)
 
 	argc_error(argc);
 	player_init(&win, argv);
-	mouse_init(&win);
 	vector_init(&win);
 	win.player.movespeed = 0.2;
 	win.player.rotspeed = 0.1;
@@ -82,11 +78,8 @@ int	main(int argc, char **argv)
 		error_pixel(&win);
 	if (create_adr_wall(&win, &win.e))
 		error_pixel(&win);
-	create_hero(&win);
-	inicialization_minimap(&win);
-	drawall(&win);
-	mlx_hook(win.win, 2, 1L << 0, pressbutton, &win);
-	mlx_hook(win.win, 6, 1L << 0, ft_mouse, &win);
+	drawall_no_bonus(&win);
+	mlx_hook(win.win, 2, 1L << 0, pressbutton_no_bonus, &win);
 	mlx_hook(win.win, 17, 0, destroy, &win);
 	mlx_loop(win.mlx);
 }

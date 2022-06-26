@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_paths_colors.h                                :+:      :+:    :+:   */
+/*   draw_all_no_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/12 18:24:23 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/12 18:24:23 by jkieth           ###   ########.fr       */
+/*   Created: 2022/05/17 16:23:33 by jkieth            #+#    #+#             */
+/*   Updated: 2022/05/17 16:23:33 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INIT_PATHS_COLORS_H
-# define INIT_PATHS_COLORS_H
-# include "parse_map.h"
+#include "../mlx123/mlx.h"
+#include"../incs/raycast.h"
+#include "../incs/minimap_bonus.h"
 
-int	init_path(t_map *map, char **full);
-int	pull_colors(t_map *map, char **str_array, int last, int i);
-int	paths_colors(t_map *map, char **full, int i);
-int	errors_paths_colors(int num, char **str_array1, char **str_array2);
-int	check_second_arg(char **str_array);
-
-#endif /*INIT_PATHS_COLORS_H*/
+void	drawall_no_bonus(t_win *win)
+{
+	mlx_clear_window(win->mlx, win->win);
+	raycast(win, &win->player);
+	mlx_put_image_to_window(win->mlx, win->win, win->temp.img, 0, 0);
+}

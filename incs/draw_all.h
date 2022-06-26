@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_paths_colors.h                                :+:      :+:    :+:   */
+/*   draw_all.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jkieth <jkieth@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/12 18:24:23 by jkieth            #+#    #+#             */
-/*   Updated: 2022/04/12 18:24:23 by jkieth           ###   ########.fr       */
+/*   Created: 2022/05/17 16:14:05 by jkieth            #+#    #+#             */
+/*   Updated: 2022/05/17 16:14:05 by jkieth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INIT_PATHS_COLORS_H
-# define INIT_PATHS_COLORS_H
-# include "parse_map.h"
+#ifndef DRAW_ALL_H
+# define DRAW_ALL_H
 
-int	init_path(t_map *map, char **full);
-int	pull_colors(t_map *map, char **str_array, int last, int i);
-int	paths_colors(t_map *map, char **full, int i);
-int	errors_paths_colors(int num, char **str_array1, char **str_array2);
-int	check_second_arg(char **str_array);
+# include "s_win.h"
 
-#endif /*INIT_PATHS_COLORS_H*/
+void	drawall(t_win *win);
+void	drawall_no_bonus(t_win *win);
+
+#endif /*DRAW_ALL_H*/

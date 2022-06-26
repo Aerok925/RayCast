@@ -32,14 +32,14 @@ char	*fill_len_with_space(char *old_str, int max_len)
 	return (new_line);
 }
 
-char	**correct_map(char **map)
+char	**correct_map(char **map, int i)
 {
 	char	**new_map;
 	int		max_len;
-	int		i;
 
 	max_len = find_biggest_line(map);
-	i = 0;
+	if (max_len == 0)
+		return (map);
 	new_map = malloc(sizeof(char *) * (count_str(map) + 1));
 	if (!new_map)
 		return (NULL);
@@ -55,6 +55,7 @@ char	**correct_map(char **map)
 		}
 		i++;
 	}
+	new_map[i] = NULL;
 	free_matrix(map);
 	return (new_map);
 }
@@ -73,39 +74,45 @@ int	count_str(char **strs)
 
 char	**str_array_dup(char **strs, int start, int finish)
 {
-	char	**new_str;
+	char	**new_strs;
 	int		i;
 
 	i = 0;
 	if (finish - start <= 0)
 		return (NULL);
-	new_str = malloc(sizeof(char *) * (finish - start) + 1);
-	if (new_str == NULL)
+	new_strs = malloc(sizeof(char *) * ((finish - start) + 1));
+	if (new_strs == NULL)
 		return (NULL);
 	while (strs && strs[start] && start < finish)
 	{
-		new_str[i] = ft_strdup(strs[start]);
+		new_strs[i] = ft_strdup(strs[start]);
 		start++;
 		i++;
 	}
-	new_str[i] = NULL;
-	return (new_str);
+	new_strs[i] = NULL;
+	return (new_strs);
 }
 
 int	find_biggest_line(char **map)
 {
 	int	len;
+	int	max;
 	int	count;
 	int	i;
 
 	i = 0;
+	max = 0;
 	count = 0;
 	while (map[i])
 	{
 		len = ft_strlen(map[i]);
-		if (len > count)
-			count = len;
+		if (len == max)
+			count++;
+		if (len > max)
+			max = len;
 		i++;
 	}
-	return (count);
+	if (count == count_str(map))
+		return (0);
+	return (max);
 }

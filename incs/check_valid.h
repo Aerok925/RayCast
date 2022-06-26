@@ -14,7 +14,7 @@
 # define CHECK_VALID_H
 # include "../incs/parse_map.h"
 
-int	check_valid(char **map, int i, int j);
+int	check_valid(t_map *map, int i, int j, int check);
 int	check_path(t_map *map);
 int	is_digit_space(char *str);
 

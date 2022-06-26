@@ -17,9 +17,10 @@ void	*free_matrix(char **str_array)
 	int	i;
 
 	i = 0;
-	while (str_array[i])
+	while (str_array && str_array[i])
 		free(str_array[i++]);
-	free(str_array);
+	if (str_array)
+		free(str_array);
 	return (0);
 }
 
