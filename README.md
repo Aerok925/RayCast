@@ -1,4 +1,4 @@
-# cub3D
+# RayCast
 The goal of cub3d is to make something using raycasting.
 
 * WASD to move, QE or Left/Right directional keys to rotate camera
